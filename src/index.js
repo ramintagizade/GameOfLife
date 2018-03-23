@@ -18,7 +18,7 @@ class GameOfLife extends React.Component {
 	render() {
 		return (
 			<div > 
-				<Generation cbNext={this.getNext}/>
+				<Generation cbNext={this.getNext} nthGeneration={this.state.next}/>
 				<Board nextActive={this.state.next}/>
 				<Settings/>
 			</div>
@@ -33,21 +33,76 @@ class Board extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			cells:[]
-		}
+			cells:[],
+			updateCell:{i:-1,j:-1,color:""}
+		};
+		this.generate = this.generate.bind(this);
+		this.updateCell = this.updateCell.bind(this);
 		
+	}
+	updateCell(cell) {
+		console.log(cell);
+		let cells = [...this.state.cells];
+		cells[cell.i][cell.j] = cell.color;
+		this.setState({
+			cells:cells
+		});
+	}
+	generate(){
+
+		var cells = [...this.state.cells];
+		var newGenCell = []; 
+		
+		cells.forEach(function(row, x) {
+	        newGenCell[x] = [];
+	        row.forEach(function(cell, y) {
+	            var alive = "black", count = countNeighbors(x, y);
+	            
+	            if (cell !="black") {
+	                alive = count === 2 || count === 3 ? "red" : "black";
+	            } else {
+	                alive = count === 3 ? "yellow" : "black";
+	            }
+	            
+	            newGenCell[x][y] = alive;
+	        });
+	    });
+    	
+    	cells = newGenCell
+		
+    	
+    	function countNeighbors(r,c) {
+    		function checkBounds(i,j) {
+    			return (i>=0 && i<14 && j>=0 && j<50) && (cells[i][j]!="black");
+    		}
+    		let cnt = 0;
+    		if(checkBounds(r-1,c-1)) cnt++;
+    		if(checkBounds(r-1,c)) cnt++;
+    		if(checkBounds(r-1,c+1)) cnt++;
+    		if(checkBounds(r,c-1)) cnt++;
+    		if(checkBounds(r,c+1)) cnt++;
+    		if(checkBounds(r+1,c-1)) cnt++;
+    		if(checkBounds(r+1,c)) cnt++;
+    		if(checkBounds(r+1,c+1)) cnt++;
+    		return cnt;
+     	}
+
+        this.setState({
+        	cells:cells
+        });
+
 	}
 	componentDidUpdate(prevProps, prevState) {
 		if(prevProps.nextActive!=this.props.nextActive) {
-			alert("active " + this.props.nextActive);
+			this.generate();
 		}
 	}
 	componentDidMount() {
 		var cells = [];
-		for(let i=0;i<20;i++) {
+		for(let i=0;i<14;i++) {
 			cells[i] = [];
-			for(let j=0;j<140;j++){
-				cells[i].push('*');
+			for(let j=0;j<50;j++){
+				cells[i].push('black');
 			}
 		}
 		this.setState({
@@ -56,10 +111,11 @@ class Board extends React.Component {
 	}
 
 	render() {
+		var self = this;
 		var mapCells = this.state.cells.map(function(row,i){
-			
 			return row.map(function(elem, j){
-				return <Cell key={i+j} i={i} j={j}/>; 
+				console.log(elem)
+				return <Cell key={i+j} i={i} j={j} color={elem} style={{backgroundColor:elem}} updateCellCB={self.updateCell}/>; 
 			});
 		});
 
@@ -76,41 +132,21 @@ class Cell extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onClick = this.onClick.bind(this);
-		this.state = {
-			// yellow , red, black 
-			livingCondition:'black'				
-		}
 	}
 	onClick(ev) {
 		ev.preventDefault();
 		ev.stopPropagation();
 		let i = this.props.i;
 		let j = this.props.j;
-		var div = document.getElementsByClassName("cell");
-		//convert 1d to 2d 
-		var cell = [];
-		let cnt = 0;
-		for(let i=0;i<20;i++) {
-			cell[i] = [];
-			for(let j=0;j<140;j++) {
-				cell[i].push(div[cnt]);
-				cnt++;
-			}
-		}
-		//let curDiv = div[i*87 + j].style.backgroundColor;
-		let curDiv = cell[i][j].style.backgroundColor;
-		if(curDiv !="green") {
-			cell[i][j].style.backgroundColor = "green";
+		let color = this.props.color;
+		if(color!="red" && color!="yellow") {
+			color = "yellow";
 		}
 		else {
-			cell[i][j].style.backgroundColor = "black";
+			color = "black";
 		}
+		this.props.updateCellCB({i:i,j:j,color:color});
 		
-		if(this.state.livingConditio=="black") {
-			this.setState({
-				livingCondition:'yellow'
-			});
-		}
 		return false;
 	}
 	toggleClick() {
@@ -118,7 +154,7 @@ class Cell extends React.Component {
 	}
 	render() {
 		return (
-				<div className="cell"  onClick={this.onClick} refs={"container"}> </div> 
+				<div className="cell"  onClick={this.onClick} refs={"container"} style={this.props.style}> </div> 
 		);
 	}
 }
@@ -160,7 +196,7 @@ class Generation extends React.Component {
 			<div className="generation"> 
 				<div className="generation">
 					<div className="run">Run </div> <div className="run" onClick={this.next}>Next </div><div className="run">Pause </div><div className="run">Clear </div>
-					<p>Generation: </p>
+					<p>Generation: {this.props.nthGeneration}</p>
 				</div>
 			</div>
 		);
