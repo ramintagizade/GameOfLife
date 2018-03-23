@@ -1,0 +1,105 @@
+body {
+	background:red;	
+}
+.Board {
+	border: 5px solid gray;
+	display:table;
+	background:gray;
+	width: calc((100%) - (200px)); 
+	height: calc((100%) - (200px));
+	margin-right: auto;
+  	margin-left:  auto;
+  	margin-top: 100px;
+  
+}
+.cell {
+	width: calc((1%));
+	height: 10px;
+    border-top: 1px solid #333;
+    border-left: 1px solid #222;
+    padding: 2px;
+    float: left;
+    background: black;
+}
+.settings {
+	font:bold;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 0px;
+	width: calc((100%) - (400px)); 
+	height: 100px;
+	background: gray;
+	border-bottom-right-radius: 10px;
+	border-bottom-left-radius: 10px;
+	color:white;
+	text-align: center;
+	cursor: default;
+}
+
+.settings-size p {
+	font-size: 20px;
+	font-style:initial;
+	width: 20%;
+	float: left;
+}
+.settings-speed p {
+	font: bold;
+	font-size: 20px;
+	font-style:initial;
+	width: 20%;
+	float: left;
+}
+.settings-size .size {
+	float: left;
+	font:bold;
+	width: 20%;
+	margin-left: 40px;
+	background: black;
+	border : 1px solid white;
+	
+}
+.settings-speed {
+	clear: both;
+}
+.settings-speed .speed {
+	float: left;
+	font:bold;
+	width: 20%;
+	margin-left: 40px;
+	background: black;
+	border : 1px solid white;
+}
+.generation {
+	position: absolute;
+	top:0px;
+	left:0;
+	font:bold;
+	margin-left: auto;
+	margin-right: auto;
+	width: calc((100%) - (200px)); 
+	background: gray;
+	color:white;
+	text-align: center;
+	margin-left:100px;
+	margin-top:30px;
+	border-top-right-radius: 10px;
+	border-top-left-radius: 10px;
+	cursor: default;
+
+}
+.generation .run {
+	float: left;
+	font:bold;
+	width: 10%;
+	background: black;
+	margin-left: 40px;
+	margin-top: 10px;
+	border : 1px solid white;
+}
+.generation p {
+	font-size: 20px;
+	font-style:initial;
+	width: 20%;
+	float: left;
+	margin-top: 7px;
+}
