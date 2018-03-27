@@ -7,19 +7,32 @@ class GameOfLife extends React.Component {
 		super(props);
 		this.state = {
 			next:0,
-		}
+			initCellsActive:false
+		};
 		this.getNext = this.getNext.bind(this);
+		this.initCells = this.initCells.bind(this);
+		this.resetInitCells = this.resetInitCells.bind(this);
 	}
 	getNext(val) {
 		this.setState({
 			next:val+1
 		});
 	}
+	initCells() {
+		this.setState({
+			initCellsActive:true
+		});
+	}
+	resetInitCells() {
+		this.setState({
+			initCellsActive:false
+		});
+	}
 	render() {
 		return (
 			<div > 
-				<Generation cbNext={this.getNext} nthGeneration={this.state.next}/>
-				<Board nextActive={this.state.next}/>
+				<Generation cbNext={this.getNext} nthGeneration={this.state.next} cbInit={this.initCells}/>
+				<Board nextActive={this.state.next} initCellsActive={this.state.initCellsActive} resetInitCellsCB={this.resetInitCells}/>
 				<Settings/>
 			</div>
 
@@ -38,6 +51,7 @@ class Board extends React.Component {
 		};
 		this.generate = this.generate.bind(this);
 		this.updateCell = this.updateCell.bind(this);
+		//this.initCells = this.initCells.bind(this);
 		
 	}
 	updateCell(cell) {
@@ -52,7 +66,7 @@ class Board extends React.Component {
 
 		var cells = [...this.state.cells];
 		var newGenCell = []; 
-		
+
 		cells.forEach(function(row, x) {
 	        newGenCell[x] = [];
 	        row.forEach(function(cell, y) {
@@ -96,8 +110,12 @@ class Board extends React.Component {
 		if(prevProps.nextActive!=this.props.nextActive) {
 			this.generate();
 		}
+		if(prevProps.initCellsActive!=this.props.initCellsActive){
+			this.initCells();
+			this.props.resetInitCellsCB();
+		}
 	}
-	componentDidMount() {
+	initCells() {
 		var cells = [];
 		for(let i=0;i<14;i++) {
 			cells[i] = [];
@@ -106,15 +124,17 @@ class Board extends React.Component {
 			}
 		}
 		this.setState({
-			cells:cells
+			cells:cells,
 		});
+	}
+	componentDidMount() {
+		this.initCells();
 	}
 
 	render() {
 		var self = this;
 		var mapCells = this.state.cells.map(function(row,i){
 			return row.map(function(elem, j){
-				console.log(elem)
 				return <Cell key={i+j} i={i} j={j} color={elem} style={{backgroundColor:elem}} updateCellCB={self.updateCell}/>; 
 			});
 		});
@@ -182,8 +202,14 @@ class Generation extends React.Component {
 		super(props);
 		this.state = {
 			generation:0,
+			pause:false,
+			run:false,
+			lastActivity:""
 		}
 		this.next = this.next.bind(this);
+		this.run = this.run.bind(this);
+		this.pause = this.pause.bind(this);
+		this.clear = this.clear.bind(this);
 	}
 	next() {
 		this.setState({
@@ -191,11 +217,50 @@ class Generation extends React.Component {
 		});
 		this.props.cbNext(this.state.generation);
 	}
+	run() {
+		var self = this;
+		if(!this.state.run) {
+			this.interval = setInterval(function(){
+				self.props.cbNext(self.state.generation);
+				self.setState({
+					lastActivity:"run",
+					generation:self.state.generation+1,
+					pause:false,
+					run:true
+				});
+			},1000);
+			return this.interval;
+		}
+	}
+	pause() {
+		var self = this;
+		this.setState({
+			run:false,
+			pause:!this.state.pause},function(){
+				if(this.state.pause)
+					clearInterval(self.interval);
+				else if(self.state.lastActivity=="run") self.run();
+			});	
+	}
+	clear() {
+		var self = this;
+		this.setState({
+			generation:0,
+			run:false,
+			pause:false,
+			lastActivity:""
+		});
+		if(this.state.run)
+			clearInterval(this.interval);
+		this.props.cbNext(-1);
+		this.props.cbInit();
+	}
 	render() {
 		return (
 			<div className="generation"> 
 				<div className="generation">
-					<div className="run">Run </div> <div className="run" onClick={this.next}>Next </div><div className="run">Pause </div><div className="run">Clear </div>
+					<div className="run" onClick={this.run}>Run </div> <div className="run" onClick={this.next}>Next </div>
+					<div className="run" onClick={this.pause}>Pause </div><div className="run" onClick={this.clear}>Clear </div>
 					<p>Generation: {this.props.nthGeneration}</p>
 				</div>
 			</div>
