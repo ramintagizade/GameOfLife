@@ -21,54 +21,7 @@ body {
     float: left;
     background: black;
 }
-.settings {
-	font:bold;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 0px;
-	width: calc((100%) - (400px)); 
-	height: 100px;
-	background: gray;
-	border-bottom-right-radius: 10px;
-	border-bottom-left-radius: 10px;
-	color:white;
-	text-align: center;
-	cursor: default;
-}
 
-.settings-size p {
-	font-size: 20px;
-	font-style:initial;
-	width: 20%;
-	float: left;
-}
-.settings-speed p {
-	font: bold;
-	font-size: 20px;
-	font-style:initial;
-	width: 20%;
-	float: left;
-}
-.settings-size .size {
-	float: left;
-	font:bold;
-	width: 20%;
-	margin-left: 40px;
-	background: black;
-	border : 1px solid white;
-	
-}
-.settings-speed {
-	clear: both;
-}
-.settings-speed .speed {
-	float: left;
-	font:bold;
-	width: 20%;
-	margin-left: 40px;
-	background: black;
-	border : 1px solid white;
-}
 .generation {
 	position: absolute;
 	top:0px;

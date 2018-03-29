@@ -33,7 +33,7 @@ class GameOfLife extends React.Component {
 			<div > 
 				<Generation cbNext={this.getNext} nthGeneration={this.state.next} cbInit={this.initCells}/>
 				<Board nextActive={this.state.next} initCellsActive={this.state.initCellsActive} resetInitCellsCB={this.resetInitCells}/>
-				<Settings/>
+				
 			</div>
 
 		);
@@ -87,7 +87,7 @@ class Board extends React.Component {
     	
     	function countNeighbors(r,c) {
     		function checkBounds(i,j) {
-    			return (i>=0 && i<14 && j>=0 && j<50) && (cells[i][j]!="black");
+    			return (i>=0 && i<20 && j>=0 && j<50) && (cells[i][j]!="black");
     		}
     		let cnt = 0;
     		if(checkBounds(r-1,c-1)) cnt++;
@@ -117,10 +117,11 @@ class Board extends React.Component {
 	}
 	initCells() {
 		var cells = [];
-		for(let i=0;i<14;i++) {
+		for(let i=0;i<20;i++) {
 			cells[i] = [];
 			for(let j=0;j<50;j++){
-				cells[i].push('black');
+				if((i+j)%3==0) cells[i].push("yellow");
+				else cells[i].push('black');
 			}
 		}
 		this.setState({
@@ -179,24 +180,6 @@ class Cell extends React.Component {
 	}
 }
 
-class Settings extends React.Component {
-	constructor() {
-		super();
-	}
-	render() {
-		return (
-			<div className="settings"> 
-				<div className="settings-size"><p>Board Size:</p>
-					<div className="size">Size:  </div><div className="size">Size: </div><div className="size">Size: </div>
-				</div>
-				<div className="settings-speed"><p>Sim Speed:</p>
-					<div className="speed">Slow  </div><div className="speed">Medium </div><div className="speed">Fast </div>
-				</div>
-			</div>
-		);
-	}
-}
-
 class Generation extends React.Component {
 	constructor(props){
 		super(props);
@@ -210,6 +193,9 @@ class Generation extends React.Component {
 		this.run = this.run.bind(this);
 		this.pause = this.pause.bind(this);
 		this.clear = this.clear.bind(this);
+	}
+	componentDidMount() {
+		this.run();
 	}
 	next() {
 		this.setState({
@@ -228,7 +214,7 @@ class Generation extends React.Component {
 					pause:false,
 					run:true
 				});
-			},1000);
+			},500);
 			return this.interval;
 		}
 	}
