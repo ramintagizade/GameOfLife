@@ -1,10 +1,20 @@
-## GameOfLife
+## Conways Game Of Life
 
 ### Install Dependencies 
 <code> npm install </code>
 
-### Run 
-<code> npm start </code>
+### Build 
+<code> npm build </code>
 
-### View in Browser 
-<code>http://localhost:8080</code>
+### Run in dev
+<code> npm run dev </code>
+
+### Run in prod 
+<code>npm start</code>
+
+
+### View in dev 
+<code>http://localhost:3000</code>
+
+### View in prod 
+<code> https://conwaysgame-of-life.herokuapp.com </code>
