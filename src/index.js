@@ -51,7 +51,6 @@ class Board extends React.Component {
 		};
 		this.generate = this.generate.bind(this);
 		this.updateCell = this.updateCell.bind(this);
-		//this.initCells = this.initCells.bind(this);
 		
 	}
 	updateCell(cell) {
@@ -115,7 +114,7 @@ class Board extends React.Component {
 			this.props.resetInitCellsCB();
 		}
 	}
-	initCells() {
+	fillCells() {
 		var cells = [];
 		for(let i=0;i<20;i++) {
 			cells[i] = [];
@@ -128,8 +127,20 @@ class Board extends React.Component {
 			cells:cells,
 		});
 	}
+	initCells() {
+		var cells = [];
+		for(let i=0;i<20;i++) {
+			cells[i] = [];
+			for(let j=0;j<50;j++){
+				cells[i].push('black');
+			}
+		}
+		this.setState({
+			cells:cells,
+		});
+	}
 	componentDidMount() {
-		this.initCells();
+		this.fillCells();
 	}
 
 	render() {
