@@ -4,7 +4,7 @@
 <code> npm install </code>
 
 ### Build 
-<code> npm build </code>
+<code> npm run build </code>
 
 ### Run in dev
 <code> npm run dev </code>
